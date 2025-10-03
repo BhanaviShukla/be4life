@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Base tokens and theme variants */
+/* Default to "his" at :root and allow switching via [data-theme] */
+:root,
+[data-theme="his"] {
+  /* Vintage deep forest + burgundy + gold */
+  --bg: 150 20% 9%;     /* deep forest background */
+  --fg: 43 58% 72%;     /* warm gold text */
+  --muted: 150 12% 12%; /* subtle panels */
+  --border: 43 32% 50%; /* muted gold borders */
+
+  --brand-1: 12 44% 26%;  /* burgundy card/button */
+  --brand-2: 150 25% 22%; /* emerald card/button */
+  --brand-3: 43 58% 60%;  /* gold hover/active */
+
+  --accent-1: 43 58% 72%; /* primary gold accent */
+  --accent-2: 28 55% 55%; /* warm amber secondary */
+
+  --shadow-neon: 43 58% 60%;
+  --radius-xl2: 1.25rem;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="hers"] {
+  /* "Hers" palette: Burgundy, Antique Gold, Emerald, Ivory, Charcoal, Sage, Dusty Rose */
+  /* Ivory #F8F4E3 */
+  --bg: 48 61% 93%;
+  /* Charcoal #3D3D3D */
+  --fg: 0 0% 24%;
+  /* Sage #98AE87 */
+  --muted: 94 19% 61%;
+  /* Antique Gold (muted) #C4A95B */
+  --border: 45 47% 56%;
+
+  /* Brand priorities */
+  /* Burgundy #7B1E28 */
+  --brand-1: 353 61% 30%;
+  /* Emerald #166D3B */
+  --brand-2: 146 66% 26%;
+  /* Antique Gold #C4A95B */
+  --brand-3: 45 47% 56%;
+
+  /* Accents */
+  /* Dusty Rose #B77C87 */
+  --accent-1: 349 29% 60%;
+  /* Sage #98AE87 */
+  --accent-2: 94 19% 61%;
+
+  --shadow-neon: 45 47% 56%;
+  --radius-xl2: 1.25rem;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  /* Colors - Map to Tailwind color tokens */
+  --color-background: hsl(var(--bg));
+  --color-foreground: hsl(var(--fg));
+
+  --color-primary: hsl(var(--brand-1));
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: hsl(var(--brand-2));
+  --color-secondary-foreground: #ffffff;
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--fg));
+
+  --color-accent: hsl(var(--accent-1));
+  --color-accent-foreground: hsl(var(--fg));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--border));
+  --color-ring: hsl(var(--brand-1));
+
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  /* Border radius */
+  --radius-lg: var(--radius-xl2);
+  --radius-md: calc(var(--radius-xl2) - 4px);
+  --radius-sm: calc(var(--radius-xl2) - 8px);
+
+  /* Shadows */
+  --shadow-card: var(--shadow-card);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--bg));
+  color: hsl(var(--fg));
+}
+
+/* Paper texture effect */
+.paper-texture {
+  position: relative;
+}
+
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsl(var(--fg) / 0.01) 2px,
+      hsl(var(--fg) / 0.01) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      hsl(var(--fg) / 0.01) 2px,
+      hsl(var(--fg) / 0.01) 4px
+    );
+  opacity: 0.3;
+  pointer-events: none;
 }
