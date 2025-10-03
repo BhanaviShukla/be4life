@@ -19,7 +19,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden hero-textured">
         <LeftSilhouette />
         <RightSilhouette />
 

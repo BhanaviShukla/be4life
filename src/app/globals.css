@@ -4,10 +4,10 @@
 /* Default to "his" at :root and allow switching via [data-theme] */
 :root,
 [data-theme="his"] {
-  /* Vintage deep forest + burgundy + gold */
-  --bg: 150 20% 9%;     /* deep forest background */
+  /* Vintage deep teal + burgundy + gold */
+  --bg: 195 35% 8%;     /* deep teal background */
   --fg: 43 58% 72%;     /* warm gold text */
-  --muted: 150 12% 12%; /* subtle panels */
+  --muted: 195 20% 12%; /* subtle panels */
   --border: 43 32% 50%; /* muted gold borders */
 
   --brand-1: 12 44% 26%;  /* burgundy card/button */
@@ -90,30 +90,54 @@ body {
   color: hsl(var(--fg));
 }
 
-/* Paper texture effect */
-.paper-texture {
-  position: relative;
-}
-
-.paper-texture::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Hero section texture - ancient paper/parchment effect */
+/* His theme: Fine horizontal linen-like texture */
+[data-theme="his"] .hero-textured {
+  background-color: hsl(var(--bg));
   background-image:
+    /* Subtle horizontal weave */
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      hsl(var(--fg) / 0.01) 2px,
-      hsl(var(--fg) / 0.01) 4px
+      rgba(255, 255, 255, 0.08) 2px,
+      rgba(255, 255, 255, 0.08) 3px
+    ),
+    /* Very fine noise for depth */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.25'/%3E%3C/svg%3E");
+  background-blend-mode: overlay, overlay;
+}
+
+/* Hers theme: Soft flowing fabric waves */
+[data-theme="hers"] .hero-textured {
+  background-color: hsl(var(--bg));
+  background-image:
+    /* Soft diagonal waves */
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(0, 0, 0, 0.015) 40px,
+      rgba(0, 0, 0, 0.015) 80px
     ),
     repeating-linear-gradient(
-      90deg,
+      45deg,
       transparent,
-      transparent 2px,
-      hsl(var(--fg) / 0.01) 2px,
-      hsl(var(--fg) / 0.01) 4px
-    );
-  opacity: 0.3;
-  pointer-events: none;
+      transparent 40px,
+      rgba(255, 255, 255, 0.02) 40px,
+      rgba(255, 255, 255, 0.02) 80px
+    ),
+    /* Curved wave pattern using radial gradients */
+    radial-gradient(ellipse 800px 600px at 0% 0%, transparent 40%, rgba(255, 255, 255, 0.03) 50%, transparent 60%),
+    radial-gradient(ellipse 800px 600px at 100% 100%, transparent 40%, rgba(0, 0, 0, 0.02) 50%, transparent 60%),
+    radial-gradient(ellipse 800px 600px at 100% 0%, transparent 40%, rgba(255, 255, 255, 0.025) 50%, transparent 60%),
+    radial-gradient(ellipse 800px 600px at 0% 100%, transparent 40%, rgba(0, 0, 0, 0.015) 50%, transparent 60%),
+    /* Fine grain for texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.25'/%3E%3C/svg%3E");
+  background-blend-mode: overlay;
+}
+
+/* Default fallback */
+.hero-textured {
+  background-color: hsl(var(--bg));
 }
