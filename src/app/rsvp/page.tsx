@@ -13,6 +13,13 @@ export default function RSVPPage() {
     phone: '',
     peopleCount: 1,
     childrenCount: 0,
+    peopleNames: [] as string[],
+    childrenNames: [] as string[],
+    events: {
+      bhopal: false,
+      ayodhya: false,
+    },
+    relationshipToCouple: 'BRIDE_RELATIVE',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -40,6 +47,25 @@ export default function RSVPPage() {
       newErrors.childrenCount = 'Children count cannot be negative';
     }
 
+    // Validate people names (only for additional people beyond the first)
+    for (let i = 0; i < formData.peopleCount - 1; i++) {
+      if (!formData.peopleNames[i]?.trim()) {
+        newErrors[`peopleName_${i}`] = `Person ${i + 2} name is required`;
+      }
+    }
+
+    // Validate children names
+    for (let i = 0; i < formData.childrenCount; i++) {
+      if (!formData.childrenNames[i]?.trim()) {
+        newErrors[`childrenName_${i}`] = `Child ${i + 1} name is required`;
+      }
+    }
+
+    // Validate that at least one event is selected
+    if (!formData.events.bhopal && !formData.events.ayodhya) {
+      newErrors.events = 'Please select at least one event';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -51,14 +77,69 @@ export default function RSVPPage() {
       return;
     }
 
+    // Create names list for people (include main person + additional people)
+    const additionalPeopleNames = formData.peopleNames
+      .slice(0, formData.peopleCount - 1)
+      .filter((name) => name.trim());
+    const peopleNamesList = [formData.name, ...additionalPeopleNames].join(
+      ', '
+    );
+
+    // Create names list for children
+    const childrenNamesList = formData.childrenNames
+      .slice(0, formData.childrenCount)
+      .join(', ');
+
+    // Create events list with dates
+    const selectedEvents = [];
+    const eventDates = [];
+    if (formData.events.bhopal) {
+      selectedEvents.push('Bhopal');
+      eventDates.push('21–22 Nov');
+    }
+    if (formData.events.ayodhya) {
+      selectedEvents.push('Ayodhya');
+      eventDates.push('24–26 Nov');
+    }
+    const eventsList = selectedEvents.join(' and ');
+    const datesList = eventDates.join(' and ');
+
+    // Relationship mapping
+    const relationshipMap = {
+      BRIDE_RELATIVE: "Bride's Relative",
+      GROOM_RELATIVE: "Groom's Relative",
+      BRIDE_FRIEND: "Bride's Close Friend",
+      GROOM_FRIEND: "Groom's Close Friend",
+      OTHER: 'Family Friend / Other',
+    };
+
     // Create WhatsApp message
-    const message = `Hi I am ${formData.name} and I am RSVPing for the wedding on 25th November 2025 for ${formData.peopleCount} people and ${formData.childrenCount} children.`;
+    let message = `Hi, I am *${
+      formData.name
+    }*, and I am RSVPing for **Eshlok & Bhanvi's wedding** — at *${eventsList}*, from *${datesList}*.
+
+Relation to the couple: ${
+      relationshipMap[
+        formData.relationshipToCouple as keyof typeof relationshipMap
+      ]
+    }
+
+Total guests in my group: ${formData.peopleCount + formData.childrenCount}
+* Adults (18+): ${formData.peopleCount} — ${peopleNamesList}
+* Children (below 18): ${formData.childrenCount} — ${childrenNamesList}
+
+Primary contact number: ${formData.phone}
+
+Please confirm that my RSVP has been received, and let me know if there are any details I should prepare before the events (such as ID proofs, accommodation arrangements, or travel timings).
+
+Thank you!  
+— ${formData.name}`;
 
     // Encode the message for URL
     const encodedMessage = encodeURIComponent(message);
 
     // Create WhatsApp URL
-    const phoneNumber = '<enter phone number here>';
+    const phoneNumber = '971565912018';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
     // Open WhatsApp
@@ -69,7 +150,21 @@ export default function RSVPPage() {
     const newCount = increment
       ? formData.peopleCount + 1
       : Math.max(1, formData.peopleCount - 1);
-    setFormData((prev) => ({ ...prev, peopleCount: newCount }));
+
+    // Update people names array - we only store additional people names (beyond the first)
+    const newPeopleNames = [...formData.peopleNames];
+    if (increment) {
+      newPeopleNames.push('');
+    } else {
+      newPeopleNames.pop();
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      peopleCount: newCount,
+      peopleNames: newPeopleNames,
+    }));
+
     if (errors.peopleCount) {
       setErrors((prev) => ({ ...prev, peopleCount: '' }));
     }
@@ -79,9 +174,45 @@ export default function RSVPPage() {
     const newCount = increment
       ? formData.childrenCount + 1
       : Math.max(0, formData.childrenCount - 1);
-    setFormData((prev) => ({ ...prev, childrenCount: newCount }));
+
+    // Update children names array
+    const newChildrenNames = [...formData.childrenNames];
+    if (increment) {
+      newChildrenNames.push('');
+    } else {
+      newChildrenNames.pop();
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      childrenCount: newCount,
+      childrenNames: newChildrenNames,
+    }));
+
     if (errors.childrenCount) {
       setErrors((prev) => ({ ...prev, childrenCount: '' }));
+    }
+  };
+
+  const updatePeopleName = (index: number, value: string) => {
+    const newPeopleNames = [...formData.peopleNames];
+    newPeopleNames[index] = value;
+    setFormData((prev) => ({ ...prev, peopleNames: newPeopleNames }));
+
+    // Clear error for this field
+    if (errors[`peopleName_${index}`]) {
+      setErrors((prev) => ({ ...prev, [`peopleName_${index}`]: '' }));
+    }
+  };
+
+  const updateChildrenName = (index: number, value: string) => {
+    const newChildrenNames = [...formData.childrenNames];
+    newChildrenNames[index] = value;
+    setFormData((prev) => ({ ...prev, childrenNames: newChildrenNames }));
+
+    // Clear error for this field
+    if (errors[`childrenName_${index}`]) {
+      setErrors((prev) => ({ ...prev, [`childrenName_${index}`]: '' }));
     }
   };
 
@@ -217,12 +348,50 @@ export default function RSVPPage() {
                   {errors.peopleCount}
                 </p>
               )}
+
+              {/* People Names */}
+              {formData.peopleCount > 1 && (
+                <div className="mt-4 space-y-3">
+                  {Array.from(
+                    { length: formData.peopleCount - 1 },
+                    (_, index) => (
+                      <div key={index}>
+                        <label
+                          htmlFor={`peopleName_${index}`}
+                          className="block text-sm font-medium text-foreground mb-1"
+                        >
+                          Person {index + 2} Name *
+                        </label>
+                        <input
+                          type="text"
+                          id={`peopleName_${index}`}
+                          value={formData.peopleNames[index] || ''}
+                          onChange={(e) =>
+                            updatePeopleName(index, e.target.value)
+                          }
+                          className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
+                            errors[`peopleName_${index}`]
+                              ? 'border-destructive'
+                              : 'border-border'
+                          }`}
+                          placeholder={`Enter person ${index + 2} name`}
+                        />
+                        {errors[`peopleName_${index}`] && (
+                          <p className="text-destructive text-sm mt-1">
+                            {errors[`peopleName_${index}`]}
+                          </p>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Children Count */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Number of Children
+                Number of Children (children under 18)
               </label>
               <div className="flex items-center gap-4">
                 <Button
@@ -258,6 +427,117 @@ export default function RSVPPage() {
                   {errors.childrenCount}
                 </p>
               )}
+
+              {/* Children Names */}
+              {formData.childrenCount > 0 && (
+                <div className="mt-4 space-y-3">
+                  {Array.from(
+                    { length: formData.childrenCount },
+                    (_, index) => (
+                      <div key={index}>
+                        <label
+                          htmlFor={`childrenName_${index}`}
+                          className="block text-sm font-medium text-foreground mb-1"
+                        >
+                          Child {index + 1} Name *
+                        </label>
+                        <input
+                          type="text"
+                          id={`childrenName_${index}`}
+                          value={formData.childrenNames[index] || ''}
+                          onChange={(e) =>
+                            updateChildrenName(index, e.target.value)
+                          }
+                          className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
+                            errors[`childrenName_${index}`]
+                              ? 'border-destructive'
+                              : 'border-border'
+                          }`}
+                          placeholder={`Enter child ${index + 1} name`}
+                        />
+                        {errors[`childrenName_${index}`] && (
+                          <p className="text-destructive text-sm mt-1">
+                            {errors[`childrenName_${index}`]}
+                          </p>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Events Selection */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">
+                Which events will you attend? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.events.bhopal}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        events: { ...prev.events, bhopal: e.target.checked },
+                      }));
+                      if (errors.events) {
+                        setErrors((prev) => ({ ...prev, events: '' }));
+                      }
+                    }}
+                    className="w-5 h-5 text-accent bg-muted/20 border-2 border-border rounded focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
+                  />
+                  <span className="text-foreground">Bhopal (21–22 Nov)</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.events.ayodhya}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        events: { ...prev.events, ayodhya: e.target.checked },
+                      }));
+                      if (errors.events) {
+                        setErrors((prev) => ({ ...prev, events: '' }));
+                      }
+                    }}
+                    className="w-5 h-5 text-accent bg-muted/20 border-2 border-border rounded focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
+                  />
+                  <span className="text-foreground">Ayodhya (24–26 Nov)</span>
+                </label>
+              </div>
+              {errors.events && (
+                <p className="text-destructive text-sm mt-1">{errors.events}</p>
+              )}
+            </div>
+
+            {/* Relationship to Couple */}
+            <div>
+              <label
+                htmlFor="relationship"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
+                Relationship to the couple *
+              </label>
+              <select
+                id="relationship"
+                value={formData.relationshipToCouple}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    relationshipToCouple: e.target.value,
+                  }))
+                }
+                className="w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors border-border"
+              >
+                <option value="BRIDE_RELATIVE">Bride's Relative</option>
+                <option value="GROOM_RELATIVE">Groom's Relative</option>
+                <option value="BRIDE_FRIEND">Bride's Close Friend</option>
+                <option value="GROOM_FRIEND">Groom's Close Friend</option>
+                <option value="OTHER">Family Friend / Other</option>
+              </select>
             </div>
 
             {/* Submit Button */}
@@ -270,8 +550,21 @@ export default function RSVPPage() {
             </Button>
           </form>
 
+          {/* Call Alternative */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-foreground/60 mb-3">
+              If you don&apos;t have WhatsApp, don&apos;t worry,{' '}
+              <button
+                onClick={() => window.open('tel:+971565912018', '_self')}
+                className="text-accent hover:text-accent/80 underline font-medium transition-colors"
+              >
+                click here to call the planners
+              </button>
+            </p>
+          </div>
+
           {/* Footer Note */}
-          <div className="mt-8 text-center">
+          <div className="mt-4 text-center">
             <p className="text-sm text-foreground/60">
               You will be redirected to WhatsApp to send your RSVP
             </p>
