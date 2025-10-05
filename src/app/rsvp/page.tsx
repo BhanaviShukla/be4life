@@ -114,7 +114,7 @@ export default function RSVPPage() {
     };
 
     // Create WhatsApp message
-    let message = `Hi, I am *${
+    const message = `Hi, I am *${
       formData.name
     }*, and I am RSVPing for **Eshlok & Bhanvi's wedding** — at *${eventsList}*, from *${datesList}*.
 
@@ -532,10 +532,10 @@ Thank you!
                 }
                 className="w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors border-border"
               >
-                <option value="BRIDE_RELATIVE">Bride's Relative</option>
-                <option value="GROOM_RELATIVE">Groom's Relative</option>
-                <option value="BRIDE_FRIEND">Bride's Close Friend</option>
-                <option value="GROOM_FRIEND">Groom's Close Friend</option>
+                <option value="BRIDE_RELATIVE">Bride&apos;s Relative</option>
+                <option value="GROOM_RELATIVE">Groom&apos;s Relative</option>
+                <option value="BRIDE_FRIEND">Bride&apos;s Close Friend</option>
+                <option value="GROOM_FRIEND">Groom&apos;s Close Friend</option>
                 <option value="OTHER">Family Friend / Other</option>
               </select>
             </div>
