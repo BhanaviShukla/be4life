@@ -246,23 +246,23 @@ Thank you!
       {/* Main Content */}
       <div className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <motion.div
-          className="w-full max-w-md mx-auto bg-background/95 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-card"
+          className="w-full max-w-md lg:max-w-2xl mx-auto bg-background/95 backdrop-blur-sm border border-border/50 rounded-2xl p-6 md:p-10 lg:p-12 shadow-card"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="font-serif text-4xl md:text-5xl text-accent mb-4">
+          <div className="text-center mb-10">
+            <h1 className="font-serif text-4xl md:text-5xl text-accent mb-3">
               RSVP
             </h1>
-            <p className="text-foreground/80 text-lg">
+            <p className="text-foreground/70 text-base">
               Please fill out the form below to confirm your attendance
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Name Field */}
             <div className="space-y-2">
               <Label htmlFor="name">Full Name *</Label>
@@ -305,11 +305,51 @@ Thank you!
               )}
             </div>
 
+            {/* Relationship to Couple */}
+            <div className="space-y-2">
+              <Label htmlFor="relationship">
+                Relationship to the couple *
+              </Label>
+              <Select
+                value={formData.relationshipToCouple}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    relationshipToCouple: value,
+                  }))
+                }
+              >
+                <SelectTrigger id="relationship">
+                  <SelectValue placeholder="Select relationship" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="BRIDE_RELATIVE">
+                    Bride&apos;s Relative
+                  </SelectItem>
+                  <SelectItem value="GROOM_RELATIVE">
+                    Groom&apos;s Relative
+                  </SelectItem>
+                  <SelectItem value="BRIDE_FRIEND">
+                    Bride&apos;s Close Friend
+                  </SelectItem>
+                  <SelectItem value="GROOM_FRIEND">
+                    Groom&apos;s Close Friend
+                  </SelectItem>
+                  <SelectItem value="OTHER">Family Friend / Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-border/30 pt-6">
+              <h3 className="font-serif text-lg text-foreground/90 mb-6">
+                Guest Information
+              </h3>
+            </div>
+
             {/* People Count */}
             <div>
-              <div className="block text-sm font-medium text-foreground mb-2">
-                Number of People *
-              </div>
+              <Label className="mb-3 block">Number of People *</Label>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
@@ -383,9 +423,9 @@ Thank you!
 
             {/* Children Count */}
             <div>
-              <div className="block text-sm font-medium text-foreground mb-2">
-                Number of Children (children under 18)
-              </div>
+              <Label className="mb-3 block">
+                Number of Children (under 18)
+              </Label>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
@@ -457,6 +497,13 @@ Thank you!
               )}
             </div>
 
+            {/* Divider */}
+            <div className="border-t border-border/30 pt-6">
+              <h3 className="font-serif text-lg text-foreground/90 mb-6">
+                Event Details
+              </h3>
+            </div>
+
             {/* Events Selection */}
             <div className="space-y-3">
               <Label>Which events will you attend? *</Label>
@@ -468,7 +515,10 @@ Thank you!
                     onCheckedChange={(checked) => {
                       setFormData((prev) => ({
                         ...prev,
-                        events: { ...prev.events, bhopal: checked as boolean },
+                        events: {
+                          ...prev.events,
+                          bhopal: checked as boolean,
+                        },
                       }));
                       if (errors.events) {
                         setErrors((prev) => ({ ...prev, events: "" }));
@@ -489,7 +539,10 @@ Thank you!
                     onCheckedChange={(checked) => {
                       setFormData((prev) => ({
                         ...prev,
-                        events: { ...prev.events, ayodhya: checked as boolean },
+                        events: {
+                          ...prev.events,
+                          ayodhya: checked as boolean,
+                        },
                       }));
                       if (errors.events) {
                         setErrors((prev) => ({ ...prev, events: "" }));
@@ -505,45 +558,14 @@ Thank you!
                 </div>
               </div>
               {errors.events && (
-                <p className="text-destructive text-sm mt-1">{errors.events}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors.events}
+                </p>
               )}
             </div>
 
-            {/* Relationship to Couple */}
-            <div className="space-y-2">
-              <Label htmlFor="relationship">Relationship to the couple *</Label>
-              <Select
-                value={formData.relationshipToCouple}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    relationshipToCouple: value,
-                  }))
-                }
-              >
-                <SelectTrigger id="relationship">
-                  <SelectValue placeholder="Select relationship" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="BRIDE_RELATIVE">
-                    Bride&apos;s Relative
-                  </SelectItem>
-                  <SelectItem value="GROOM_RELATIVE">
-                    Groom&apos;s Relative
-                  </SelectItem>
-                  <SelectItem value="BRIDE_FRIEND">
-                    Bride&apos;s Close Friend
-                  </SelectItem>
-                  <SelectItem value="GROOM_FRIEND">
-                    Groom&apos;s Close Friend
-                  </SelectItem>
-                  <SelectItem value="OTHER">Family Friend / Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Submit Button */}
-            <Button type="submit" size="lg" className="w-full">
+            <Button type="submit" size="default" className="w-full">
               Submit RSVP
             </Button>
           </form>

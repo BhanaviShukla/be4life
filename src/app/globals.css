@@ -69,6 +69,9 @@
   --color-accent: hsl(var(--accent-1));
   --color-accent-foreground: hsl(var(--fg));
 
+  --color-popover: hsl(var(--bg));
+  --color-popover-foreground: hsl(var(--fg));
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--border));
   --color-ring: hsl(var(--brand-1));
