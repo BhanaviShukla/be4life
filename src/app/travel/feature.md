@@ -2,7 +2,7 @@
 
 ### Wedding Website — Bhanvi & Eshlok
 
-_(b4.life/travel)_
+_(be4.life/travel)_
 
 ---
 
@@ -142,8 +142,8 @@ _(for b4.life Wedding Website — Bhanvi & Eshlok)_
 - [ ] `Weather7Day` mock → live (Open-Meteo)
 - [ ] `.env` toggles; caching
       **Commits:**  
-      `feat(weather): add 7-day weather widget with mock data`  
-      `feat(weather): wire live API with env toggle and caching`
+       `feat(weather): add 7-day weather widget with mock data`  
+       `feat(weather): wire live API with env toggle and caching`
 
 ---
 
