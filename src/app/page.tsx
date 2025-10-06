@@ -10,7 +10,6 @@ import { LeftSilhouette, RightSilhouette } from "@/components/hero-silhouettes";
 import { ScrollCue } from "@/components/scroll-cue";
 
 export default function Home() {
-
   return (
     <div className="relative min-h-screen bg-background text-foreground">
       {/* Theme Toggle - Fixed position */}

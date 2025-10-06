@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   return (
     <div className="inline-flex items-center gap-0 p-1 bg-muted/20 rounded-full">
-      {(["his", "hers"] as const).map((t, idx) => (
+      {(["his", "hers"] as const).map((t) => (
         <Button
           key={t}
           type="button"

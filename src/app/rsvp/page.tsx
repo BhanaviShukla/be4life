@@ -1,16 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Plus, Minus } from 'lucide-react';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArrowLeft, Plus, Minus } from "lucide-react";
 
 export default function RSVPPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
+    name: "",
+    phone: "",
     peopleCount: 1,
     childrenCount: 0,
     peopleNames: [] as string[],
@@ -19,7 +29,7 @@ export default function RSVPPage() {
       bhopal: false,
       ayodhya: false,
     },
-    relationshipToCouple: 'BRIDE_RELATIVE',
+    relationshipToCouple: "BRIDE_RELATIVE",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -28,23 +38,23 @@ export default function RSVPPage() {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
+      newErrors.phone = "Phone number is required";
     } else if (
-      !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))
+      !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ""))
     ) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = "Please enter a valid phone number";
     }
 
     if (formData.peopleCount < 1) {
-      newErrors.peopleCount = 'At least 1 person is required';
+      newErrors.peopleCount = "At least 1 person is required";
     }
 
     if (formData.childrenCount < 0) {
-      newErrors.childrenCount = 'Children count cannot be negative';
+      newErrors.childrenCount = "Children count cannot be negative";
     }
 
     // Validate people names (only for additional people beyond the first)
@@ -63,7 +73,7 @@ export default function RSVPPage() {
 
     // Validate that at least one event is selected
     if (!formData.events.bhopal && !formData.events.ayodhya) {
-      newErrors.events = 'Please select at least one event';
+      newErrors.events = "Please select at least one event";
     }
 
     setErrors(newErrors);
@@ -82,27 +92,27 @@ export default function RSVPPage() {
       .slice(0, formData.peopleCount - 1)
       .filter((name) => name.trim());
     const peopleNamesList = [formData.name, ...additionalPeopleNames].join(
-      ', '
+      ", "
     );
 
     // Create names list for children
     const childrenNamesList = formData.childrenNames
       .slice(0, formData.childrenCount)
-      .join(', ');
+      .join(", ");
 
     // Create events list with dates
     const selectedEvents = [];
     const eventDates = [];
     if (formData.events.bhopal) {
-      selectedEvents.push('Bhopal');
-      eventDates.push('21–22 Nov');
+      selectedEvents.push("Bhopal");
+      eventDates.push("21–22 Nov");
     }
     if (formData.events.ayodhya) {
-      selectedEvents.push('Ayodhya');
-      eventDates.push('24–26 Nov');
+      selectedEvents.push("Ayodhya");
+      eventDates.push("24–26 Nov");
     }
-    const eventsList = selectedEvents.join(' and ');
-    const datesList = eventDates.join(' and ');
+    const eventsList = selectedEvents.join(" and ");
+    const datesList = eventDates.join(" and ");
 
     // Relationship mapping
     const relationshipMap = {
@@ -110,7 +120,7 @@ export default function RSVPPage() {
       GROOM_RELATIVE: "Groom's Relative",
       BRIDE_FRIEND: "Bride's Close Friend",
       GROOM_FRIEND: "Groom's Close Friend",
-      OTHER: 'Family Friend / Other',
+      OTHER: "Family Friend / Other",
     };
 
     // Create WhatsApp message
@@ -139,11 +149,11 @@ Thank you!
     const encodedMessage = encodeURIComponent(message);
 
     // Create WhatsApp URL
-    const phoneNumber = '971565912018';
+    const phoneNumber = "+919711545145";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
     // Open WhatsApp
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, "_blank");
   };
 
   const updatePeopleCount = (increment: boolean) => {
@@ -154,7 +164,7 @@ Thank you!
     // Update people names array - we only store additional people names (beyond the first)
     const newPeopleNames = [...formData.peopleNames];
     if (increment) {
-      newPeopleNames.push('');
+      newPeopleNames.push("");
     } else {
       newPeopleNames.pop();
     }
@@ -166,7 +176,7 @@ Thank you!
     }));
 
     if (errors.peopleCount) {
-      setErrors((prev) => ({ ...prev, peopleCount: '' }));
+      setErrors((prev) => ({ ...prev, peopleCount: "" }));
     }
   };
 
@@ -178,7 +188,7 @@ Thank you!
     // Update children names array
     const newChildrenNames = [...formData.childrenNames];
     if (increment) {
-      newChildrenNames.push('');
+      newChildrenNames.push("");
     } else {
       newChildrenNames.pop();
     }
@@ -190,7 +200,7 @@ Thank you!
     }));
 
     if (errors.childrenCount) {
-      setErrors((prev) => ({ ...prev, childrenCount: '' }));
+      setErrors((prev) => ({ ...prev, childrenCount: "" }));
     }
   };
 
@@ -201,7 +211,7 @@ Thank you!
 
     // Clear error for this field
     if (errors[`peopleName_${index}`]) {
-      setErrors((prev) => ({ ...prev, [`peopleName_${index}`]: '' }));
+      setErrors((prev) => ({ ...prev, [`peopleName_${index}`]: "" }));
     }
   };
 
@@ -212,12 +222,12 @@ Thank you!
 
     // Clear error for this field
     if (errors[`childrenName_${index}`]) {
-      setErrors((prev) => ({ ...prev, [`childrenName_${index}`]: '' }));
+      setErrors((prev) => ({ ...prev, [`childrenName_${index}`]: "" }));
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen bg-background text-foreground hero-textured">
       {/* Theme Toggle - Fixed position */}
       <div className="fixed top-6 right-6 z-50">
         <ThemeToggle />
@@ -234,9 +244,9 @@ Thank you!
       </div>
 
       {/* Main Content */}
-      <div className="relative min-h-screen flex items-center justify-center px-4">
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <motion.div
-          className="w-full max-w-md mx-auto"
+          className="w-full max-w-md mx-auto bg-background/95 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-card"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -254,26 +264,19 @@ Thank you!
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-foreground mb-2"
-              >
-                Full Name *
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name *</Label>
+              <Input
                 type="text"
                 id="name"
                 value={formData.name}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, name: e.target.value }));
                   if (errors.name) {
-                    setErrors((prev) => ({ ...prev, name: '' }));
+                    setErrors((prev) => ({ ...prev, name: "" }));
                   }
                 }}
-                className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
-                  errors.name ? 'border-destructive' : 'border-border'
-                }`}
+                className={errors.name ? "border-destructive" : ""}
                 placeholder="Enter your full name"
               />
               {errors.name && (
@@ -282,26 +285,19 @@ Thank you!
             </div>
 
             {/* Phone Field */}
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-foreground mb-2"
-              >
-                Phone Number *
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number *</Label>
+              <Input
                 type="tel"
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => {
                   setFormData((prev) => ({ ...prev, phone: e.target.value }));
                   if (errors.phone) {
-                    setErrors((prev) => ({ ...prev, phone: '' }));
+                    setErrors((prev) => ({ ...prev, phone: "" }));
                   }
                 }}
-                className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
-                  errors.phone ? 'border-destructive' : 'border-border'
-                }`}
+                className={errors.phone ? "border-destructive" : ""}
                 placeholder="Enter your phone number"
               />
               {errors.phone && (
@@ -311,9 +307,9 @@ Thank you!
 
             {/* People Count */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <div className="block text-sm font-medium text-foreground mb-2">
                 Number of People *
-              </label>
+              </div>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
@@ -330,7 +326,7 @@ Thank you!
                     {formData.peopleCount}
                   </span>
                   <p className="text-sm text-foreground/60">
-                    {formData.peopleCount === 1 ? 'person' : 'people'}
+                    {formData.peopleCount === 1 ? "person" : "people"}
                   </p>
                 </div>
                 <Button
@@ -355,25 +351,22 @@ Thank you!
                   {Array.from(
                     { length: formData.peopleCount - 1 },
                     (_, index) => (
-                      <div key={index}>
-                        <label
-                          htmlFor={`peopleName_${index}`}
-                          className="block text-sm font-medium text-foreground mb-1"
-                        >
+                      <div key={index} className="space-y-2">
+                        <Label htmlFor={`peopleName_${index}`}>
                           Person {index + 2} Name *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           id={`peopleName_${index}`}
-                          value={formData.peopleNames[index] || ''}
+                          value={formData.peopleNames[index] || ""}
                           onChange={(e) =>
                             updatePeopleName(index, e.target.value)
                           }
-                          className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
+                          className={
                             errors[`peopleName_${index}`]
-                              ? 'border-destructive'
-                              : 'border-border'
-                          }`}
+                              ? "border-destructive"
+                              : ""
+                          }
                           placeholder={`Enter person ${index + 2} name`}
                         />
                         {errors[`peopleName_${index}`] && (
@@ -390,9 +383,9 @@ Thank you!
 
             {/* Children Count */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <div className="block text-sm font-medium text-foreground mb-2">
                 Number of Children (children under 18)
-              </label>
+              </div>
               <div className="flex items-center gap-4">
                 <Button
                   type="button"
@@ -409,7 +402,7 @@ Thank you!
                     {formData.childrenCount}
                   </span>
                   <p className="text-sm text-foreground/60">
-                    {formData.childrenCount === 1 ? 'child' : 'children'}
+                    {formData.childrenCount === 1 ? "child" : "children"}
                   </p>
                 </div>
                 <Button
@@ -434,25 +427,22 @@ Thank you!
                   {Array.from(
                     { length: formData.childrenCount },
                     (_, index) => (
-                      <div key={index}>
-                        <label
-                          htmlFor={`childrenName_${index}`}
-                          className="block text-sm font-medium text-foreground mb-1"
-                        >
+                      <div key={index} className="space-y-2">
+                        <Label htmlFor={`childrenName_${index}`}>
                           Child {index + 1} Name *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           id={`childrenName_${index}`}
-                          value={formData.childrenNames[index] || ''}
+                          value={formData.childrenNames[index] || ""}
                           onChange={(e) =>
                             updateChildrenName(index, e.target.value)
                           }
-                          className={`w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors ${
+                          className={
                             errors[`childrenName_${index}`]
-                              ? 'border-destructive'
-                              : 'border-border'
-                          }`}
+                              ? "border-destructive"
+                              : ""
+                          }
                           placeholder={`Enter child ${index + 1} name`}
                         />
                         {errors[`childrenName_${index}`] && (
@@ -468,45 +458,51 @@ Thank you!
             </div>
 
             {/* Events Selection */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-3">
-                Which events will you attend? *
-              </label>
+            <div className="space-y-3">
+              <Label>Which events will you attend? *</Label>
               <div className="space-y-3">
-                <label className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id="bhopal"
                     checked={formData.events.bhopal}
-                    onChange={(e) => {
+                    onCheckedChange={(checked) => {
                       setFormData((prev) => ({
                         ...prev,
-                        events: { ...prev.events, bhopal: e.target.checked },
+                        events: { ...prev.events, bhopal: checked as boolean },
                       }));
                       if (errors.events) {
-                        setErrors((prev) => ({ ...prev, events: '' }));
+                        setErrors((prev) => ({ ...prev, events: "" }));
                       }
                     }}
-                    className="w-5 h-5 text-accent bg-muted/20 border-2 border-border rounded focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
                   />
-                  <span className="text-foreground">Bhopal (21–22 Nov)</span>
-                </label>
-                <label className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
+                  <Label
+                    htmlFor="bhopal"
+                    className="cursor-pointer font-normal"
+                  >
+                    Bhopal (21–22 Nov)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id="ayodhya"
                     checked={formData.events.ayodhya}
-                    onChange={(e) => {
+                    onCheckedChange={(checked) => {
                       setFormData((prev) => ({
                         ...prev,
-                        events: { ...prev.events, ayodhya: e.target.checked },
+                        events: { ...prev.events, ayodhya: checked as boolean },
                       }));
                       if (errors.events) {
-                        setErrors((prev) => ({ ...prev, events: '' }));
+                        setErrors((prev) => ({ ...prev, events: "" }));
                       }
                     }}
-                    className="w-5 h-5 text-accent bg-muted/20 border-2 border-border rounded focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
                   />
-                  <span className="text-foreground">Ayodhya (24–26 Nov)</span>
-                </label>
+                  <Label
+                    htmlFor="ayodhya"
+                    className="cursor-pointer font-normal"
+                  >
+                    Ayodhya (24–26 Nov)
+                  </Label>
+                </div>
               </div>
               {errors.events && (
                 <p className="text-destructive text-sm mt-1">{errors.events}</p>
@@ -514,48 +510,50 @@ Thank you!
             </div>
 
             {/* Relationship to Couple */}
-            <div>
-              <label
-                htmlFor="relationship"
-                className="block text-sm font-medium text-foreground mb-2"
-              >
-                Relationship to the couple *
-              </label>
-              <select
-                id="relationship"
+            <div className="space-y-2">
+              <Label htmlFor="relationship">Relationship to the couple *</Label>
+              <Select
                 value={formData.relationshipToCouple}
-                onChange={(e) =>
+                onValueChange={(value) =>
                   setFormData((prev) => ({
                     ...prev,
-                    relationshipToCouple: e.target.value,
+                    relationshipToCouple: value,
                   }))
                 }
-                className="w-full px-4 py-3 rounded-lg border bg-muted/20 text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-colors border-border"
               >
-                <option value="BRIDE_RELATIVE">Bride&apos;s Relative</option>
-                <option value="GROOM_RELATIVE">Groom&apos;s Relative</option>
-                <option value="BRIDE_FRIEND">Bride&apos;s Close Friend</option>
-                <option value="GROOM_FRIEND">Groom&apos;s Close Friend</option>
-                <option value="OTHER">Family Friend / Other</option>
-              </select>
+                <SelectTrigger id="relationship">
+                  <SelectValue placeholder="Select relationship" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="BRIDE_RELATIVE">
+                    Bride&apos;s Relative
+                  </SelectItem>
+                  <SelectItem value="GROOM_RELATIVE">
+                    Groom&apos;s Relative
+                  </SelectItem>
+                  <SelectItem value="BRIDE_FRIEND">
+                    Bride&apos;s Close Friend
+                  </SelectItem>
+                  <SelectItem value="GROOM_FRIEND">
+                    Groom&apos;s Close Friend
+                  </SelectItem>
+                  <SelectItem value="OTHER">Family Friend / Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full text-lg py-6 h-auto"
-            >
-              Send RSVP via WhatsApp
+            <Button type="submit" size="lg" className="w-full">
+              Submit RSVP
             </Button>
           </form>
 
           {/* Call Alternative */}
           <div className="mt-6 text-center">
             <p className="text-sm text-foreground/60 mb-3">
-              If you don&apos;t have WhatsApp, don&apos;t worry,{' '}
+              If you don&apos;t have WhatsApp, don&apos;t worry,{" "}
               <button
-                onClick={() => window.open('tel:+971565912018', '_self')}
+                onClick={() => window.open("tel:+971565912018", "_self")}
                 className="text-accent hover:text-accent/80 underline font-medium transition-colors"
               >
                 click here to call the planners
